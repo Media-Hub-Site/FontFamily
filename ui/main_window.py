@@ -271,8 +271,8 @@ class FontFamilyWindow(QMainWindow):
             pass
 
     def _setup_window(self):
-        self.resize(1240, 800)
-        self.setMinimumSize(1040, 680)
+        self.resize(1380, 840)
+        self.setMinimumSize(1180, 700)
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         icon_path = os.path.join(base_dir, "assets", "hub", "Media-Hub.ico")
         if os.path.isfile(icon_path):
@@ -345,6 +345,8 @@ class FontFamilyWindow(QMainWindow):
         # === PANEL IZQUIERDO: MESA DE COMPOSICIÓN EN VIVO ===
         self.composer_pane = QFrame()
         self.composer_pane.setObjectName("composerPane")
+        self.composer_pane.setMinimumWidth(390)
+        self.composer_pane.setMaximumWidth(480)
         comp_layout = QVBoxLayout(self.composer_pane)
         comp_layout.setContentsMargins(18, 16, 18, 16)
         comp_layout.setSpacing(10)
@@ -478,11 +480,12 @@ class FontFamilyWindow(QMainWindow):
 
         comp_layout.addLayout(action_bar)
 
-        workspace_layout.addWidget(self.composer_pane, 43)
+        workspace_layout.addWidget(self.composer_pane, 36)
 
         # === PANEL DERECHO: CATÁLOGO Y ESTUDIOS INTERACTIVOS ===
         self.catalog_pane = QFrame()
         self.catalog_pane.setObjectName("catalogPane")
+        self.catalog_pane.setMinimumWidth(720)
         cat_layout = QVBoxLayout(self.catalog_pane)
         cat_layout.setContentsMargins(18, 16, 18, 16)
         cat_layout.setSpacing(12)
@@ -510,7 +513,7 @@ class FontFamilyWindow(QMainWindow):
         self._build_page_emojis()
         self._build_page_favorites()
 
-        workspace_layout.addWidget(self.catalog_pane, 57)
+        workspace_layout.addWidget(self.catalog_pane, 64)
         main_layout.addLayout(workspace_layout, 1)
 
         self.active_tab_idx = 0
@@ -556,6 +559,7 @@ class FontFamilyWindow(QMainWindow):
         # Área desplazable con las tarjetas de cada fuente
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.fonts_container = QWidget()
         self.fonts_grid = QVBoxLayout(self.fonts_container)
         self.fonts_grid.setContentsMargins(0, 0, 6, 0)
@@ -596,16 +600,19 @@ class FontFamilyWindow(QMainWindow):
 
             btn_apply = QPushButton()
             btn_apply.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn_apply.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
             btn_apply.clicked.connect(lambda checked, s=sid: self.apply_or_insert_font(s))
             btn_col.addWidget(btn_apply)
 
             btn_kbd = QPushButton()
             btn_kbd.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn_kbd.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
             btn_kbd.clicked.connect(lambda checked, s=sid: self.activate_live_keyboard_font(s))
             btn_col.addWidget(btn_kbd)
 
             btn_copy = QPushButton()
             btn_copy.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn_copy.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
             btn_copy.clicked.connect(lambda checked, s=sid: self.copy_single_font_preview(s))
             btn_col.addWidget(btn_copy)
 
@@ -937,10 +944,10 @@ class FontFamilyWindow(QMainWindow):
             btn = refs["btn_kbd"]
             if sid == active_id:
                 btn.setText(self.tr_str("btn_active_kbd"))
-                btn.setStyleSheet(self._btn_style(t["secondary_accent"], "#FFFFFF", t["secondary_accent"]))
+                btn.setStyleSheet(self._btn_style(t["secondary_accent"], "#FFFFFF", t["secondary_accent"], font_pt=8.5, pad="5px 12px"))
             else:
                 btn.setText(self.tr_str("btn_use_kbd"))
-                btn.setStyleSheet(self._btn_style(t["bg_subtle"], t["text_primary"], t["border_strong"]))
+                btn.setStyleSheet(self._btn_style(t["bg_subtle"], t["text_primary"], t["border_strong"], font_pt=8.5, pad="5px 12px"))
 
     def insert_at_cursor(self, text_to_insert: str, label_for_toast: str = ""):
         cursor = self.editor.textCursor()
@@ -1406,8 +1413,8 @@ class FontFamilyWindow(QMainWindow):
                 f"background-color: {t['badge_bg']}; color: {t['badge_fg']}; border-radius: 5px; padding: 2px 7px; font-size: 7.5pt; font-weight: 800;"
             )
             refs["lbl_preview"].setStyleSheet(f"font-size: 14pt; color: {t['text_primary']};")
-            refs["btn_apply"].setStyleSheet(self._btn_style(t["accent"], t["accent_text"], t["accent"], font_pt=8.5, pad="5px 10px"))
-            refs["btn_copy"].setStyleSheet(self._btn_style(t["bg_subtle"], t["text_primary"], t["border"], font_pt=8.5, pad="5px 10px"))
+            refs["btn_apply"].setStyleSheet(self._btn_style(t["accent"], t["accent_text"], t["accent"], font_pt=8.5, pad="5px 12px"))
+            refs["btn_copy"].setStyleSheet(self._btn_style(t["bg_subtle"], t["text_primary"], t["border"], font_pt=8.5, pad="5px 12px"))
 
         self._update_font_cards_kbd_state()
         self._set_font_category(self.active_font_cat)
